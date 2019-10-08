@@ -57,4 +57,31 @@ router.post('/categorias/nova', (req, res) => {
     }
 })
 
+router.get('/categorias/edit/:id', (req, res)=>{
+    Categoria.findOne({_id: req.params.id}).then((categoria)=>{
+        res.render('admin/editcategorias', {categoria: categoria})
+    }).catch((erro)=>{
+        req.flash('error_msg', 'Nenhuma categoria encontrada com este id '+req.params.id)
+    })
+})
+
+router.post('/categorias/edit', (req, res)=>{
+    Categoria.findOne({_id: req.body.id}).then((categoria)=>{
+        categoria.nome = req.body.nome
+        categoria.slug = req.body.slug
+
+        categoria.save().then(()=>{
+            req.flash("success_msg", 'Categoria salva com sucesso')
+            console.log("sucesso")
+            res.redirect('/admin/categorias')
+        }).catch((erro)=>{
+            req.flash('error_msg', 'Não foi possível salvar')
+            res.redirect('/admin/categorias')
+        })
+    }).catch((erro)=>{
+        req.flash('error_msg', 'Houve um erro ao editar')
+        res.redirect('/admin/categorias')
+    })
+})
+
 module.exports = router
