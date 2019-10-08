@@ -4,8 +4,15 @@
     //const mongoose = require('mongoose')
     const app = express()
 
-    //configurações
+ //configurações
+    // express json
+    app.use(express.json())
 
+    //handlebars
+    app.engine('handlebars', handlebars({defaultLayout: 'main'}))
+    app.set('view engine', 'handlebars')
+
+    // mongoose
 //rotas
 
 //outros
