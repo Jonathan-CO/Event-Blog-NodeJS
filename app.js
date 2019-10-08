@@ -6,9 +6,13 @@
     const path = require('path')
     const session = require('express-session')
     const flash = require('connect-flash')
-
     require('./models/db')
+    
+    // express json
+    app.use(express.urlencoded({extended: true}))
+    app.use(express.json())
 
+     
  //configurações
     //session
     app.use(session({
@@ -24,9 +28,8 @@
         res.locals.error_msg = req.flash("error_msg")
         next()
     })
- 
-    // express json
-    app.use(express.json())
+
+
 
     //handlebars
     app.engine('handlebars', handlebars({defaultLayout: 'main'}))
@@ -35,6 +38,8 @@
     //Public
     app.use(express.static(path.join(__dirname, 'public')))
 
+
+    
 
 //rotas
 app.use('/admin', admin)
