@@ -1,8 +1,9 @@
 //carregando módulos
     const express = require ('express')
     const handlebars = require ('express-handlebars')
-    //const mongoose = require('mongoose')
+    const mongoose = require('mongoose')
     const app = express()
+    const admin = require('./routes/admin')
 
  //configurações
     // express json
@@ -13,7 +14,17 @@
     app.set('view engine', 'handlebars')
 
     // mongoose
+    mongoose.connect('mongodb+srv://blog:blog@blog-pjdr7.mongodb.net/blognodejs?retryWrites=true&w=majority', {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    }).then(()=>{
+        console.log("Conectado")
+    }).catch((erro)=>{
+        console.log("Erro ao conectar: "+erro)
+    })
 //rotas
+
+app.use('/admin', admin)
 
 //outros
 
@@ -21,3 +32,4 @@ const port = 8081
 app.listen(port, () => {
     console.log("Servidor rodando")
 })
+
