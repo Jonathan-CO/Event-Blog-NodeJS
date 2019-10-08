@@ -4,6 +4,8 @@
     const mongoose = require('mongoose')
     const app = express()
     const admin = require('./routes/admin')
+    const path = require('path')
+
 
  //configurações
     // express json
@@ -22,8 +24,11 @@
     }).catch((erro)=>{
         console.log("Erro ao conectar: "+erro)
     })
-//rotas
 
+    //Public
+    app.use(express.static(path.join(__dirname, 'public')))
+
+//rotas
 app.use('/admin', admin)
 
 //outros
