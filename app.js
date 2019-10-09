@@ -3,6 +3,7 @@
     const handlebars = require ('express-handlebars')
     const app = express()
     const admin = require('./routes/admin')
+    const usuarios = require('./routes/usuario')
     const path = require('path')
     const session = require('express-session')
     const flash = require('connect-flash')
@@ -109,7 +110,7 @@ app.get('/404', (req, res)=>{
 })
 
 app.use('/admin', admin)
-
+app.use('/usuarios', usuarios)
 //outros
 
 
