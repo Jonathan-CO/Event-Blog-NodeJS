@@ -56,8 +56,9 @@ router.post('/categorias/nova', (req, res) => {
         new Categoria(novaCategoria).save().then(()=>{
             req.flash("success_msg", "Categoria criada com sucesso")
             res.redirect('/admin/categorias')
-        }).catch(() => {
-            req.flash("error_msg", "Houve um erro ao salvar a Categoria")
+        }).catch((erro) => {
+            console.log(erro)
+            req.flash("error_msg", "Houve um erro ao salvar a Categoria: "+erro)
             res.redirect('/admin/categorias')
         })
     }
@@ -105,11 +106,11 @@ router.post('/categorias/delete', (req, res)=>{
 
 router.get('/postagens', (req, res)=>{
     Postagem.find().populate('categoria').sort(({data: 'desc'})).then((postagens)=>{
-        res.render('admin/postagens', {postagens: postagens}).catch((erro)=>{
-            req.flash('error_msg', 'houve um erro ao listar as postagens')
-            res.redirect('/admin')
-        })
-
+        res.render('admin/postagens', {postagens: postagens})
+    }).catch((erro)=>{
+        console.log(erro)
+        req.flash('error_msg', 'houve um erro ao listar as postagens')
+        res.redirect('/admin')
     })
 })
 
