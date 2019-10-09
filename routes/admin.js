@@ -2,9 +2,14 @@ const express = require('express')
 const mongoose = require('mongoose')
 
 require('../models/Categoria')
+require('../models/Postagem')
 const Categoria = mongoose.model('categorias')
+const Postagem = mongoose.model('postagens')
 
 const router = express.Router()
+
+
+// Rotas gerais
 
 router.get('/', (req, res) => {
     res.render('admin/index')
@@ -13,6 +18,8 @@ router.get('/', (req, res) => {
 router.get('/posts', (req, res) => {
     res.send("Página de posts")
 })
+
+// Rotas /categorias
 
 router.get('/categorias', (req, res) => {
     Categoria.find().sort({date:'desc'}).then((categorias)=>{
@@ -84,7 +91,6 @@ router.post('/categorias/edit', (req, res)=>{
     })
 })
 
-
 router.post('/categorias/delete', (req, res)=>{
     Categoria.deleteOne({_id: req.body.id}).then(()=>{
         req.flash('success_msg', 'Categoria deletada com sucesso')
@@ -94,4 +100,23 @@ router.post('/categorias/delete', (req, res)=>{
         res.redirect('/admin/categorias')  
     })
 })
+
+
+// Rotas /postagens
+
+router.get('/postagens', (req, res)=>{
+    res.render('admin/postagens')
+})
+
+router.get('/postagens/add', (req, res) => {
+    Categoria.find().then((categorias)=>{
+        res.render('admin/addpostagens', {
+            categorias: categorias
+        })
+    }).catch((erro)=>{
+        req.flash("error_msg", "Houve um erro ao carregar o formulario")
+        res.redirect('/admin')
+    })
+})
+
 module.exports = router
