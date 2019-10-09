@@ -42,10 +42,9 @@
         res.locals.success_msg = req.flash("success_msg")
         res.locals.error_msg = req.flash("error_msg")
         res.locals.error = req.flash('error') // para erros do passport
+        res.locals.user = req.user || null; // armazena dados do usuario
         next()
     })
-
-
 
     //handlebars
     app.engine('handlebars', handlebars({defaultLayout: 'main'}))
