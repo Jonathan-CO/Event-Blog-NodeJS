@@ -56,10 +56,9 @@ router.post('/categorias/nova', (req, res) => {
         new Categoria(novaCategoria).save().then(()=>{
             req.flash("success_msg", "Categoria criada com sucesso")
             res.redirect('/admin/categorias')
-        }).catch((erro) => {
+        }).catch(() => {
             req.flash("error_msg", "Houve um erro ao salvar a Categoria")
-            console.log("Erro ao salvar categoria: "+erro)
-            res.redirect('/admin')
+            res.redirect('/admin/categorias')
         })
     }
 })
@@ -105,7 +104,13 @@ router.post('/categorias/delete', (req, res)=>{
 // Rotas /postagens
 
 router.get('/postagens', (req, res)=>{
-    res.render('admin/postagens')
+    Postagem.find().populate('categoria').sort(({data: 'desc'})).then((postagens)=>{
+        res.render('admin/postagens', {postagens: postagens}).catch((erro)=>{
+            req.flash('error_msg', 'houve um erro ao listar as postagens')
+            res.redirect('/admin')
+        })
+
+    })
 })
 
 router.get('/postagens/add', (req, res) => {
@@ -118,5 +123,50 @@ router.get('/postagens/add', (req, res) => {
         res.redirect('/admin')
     })
 })
+
+router.post('/postagens/nova', (req, res) => {
+
+    var erros =[]
+    if(!req.body.titulo || typeof req.body.titulo == undefined || req.body.titulo == null){
+        erros.push({ texto: "titulo inválido"})
+    }
+
+    if(!req.body.slug || typeof req.body.slug == undefined || req.body.slug == null){
+        erros.push({ texto: "slug inválido"})
+    }
+
+    if(!req.body.descricao || typeof req.body.descricao == undefined || req.body.descricao == null){
+        erros.push({ texto: "descricao inválido"})
+    }
+
+    if(!req.body.conteudo || typeof req.body.conteudo == undefined || req.body.conteudo == null){
+        erros.push({ texto: "conteudo inválido"})
+    }
+
+    if(!req.body.categoria){
+        erros.push({ texto: "Categoria inválida"})
+    }
+
+    if(erros.length > 0){
+        res.render('admin/addpostagens', {erros: erros})
+    }else{
+        const novaPostagem = {
+            titulo : req.body.titulo,
+            slug: req.body.slug,
+            descricao: req.body.descricao,
+            conteudo: req.body.conteudo,
+            categoria: req.body.categoria
+        }
+        new Postagem(novaPostagem).save().then(()=>{
+            req.flash("success_msg", "Postagem criada com sucesso")
+            res.redirect('/admin/postagens')
+        }).catch((erro) => {
+            req.flash("error_msg", "Houve um erro ao salvar a Postagem")
+            console.log("Erro ao salvar postagem: "+erro)
+            res.redirect('/admin/postagens')
+        })
+    }
+})
+
 
 module.exports = router
