@@ -11,6 +11,9 @@
     require('./models/Postagem')
     const Postagem = mongoose.model('postagens')
     
+    require('./models/Categoria')
+    const Categoria = mongoose.model('categorias')
+
     // express json
     app.use(express.urlencoded({extended: true}))
     app.use(express.json())
@@ -64,6 +67,39 @@ app.get('/postagem/:slug', (req, res)=>{
         }
     }).catch((erro)=>{
         req.flash('error_msg', 'Houve um erro ao pesquisar a postagem')
+        res.redirect('/')
+    })
+})
+
+app.get('/categorias', (req, res)=>{
+    Categoria.find().then((categorias)=>{
+        res.render('categoria/index', {categorias: categorias})
+
+    }).catch((erro)=>{
+        req.flash('error_msg', 'Houve um erro ao listar as categorias')
+        res.redirect('/')
+    })
+})
+
+app.get('/categorias/:slug', (req, res)=>{
+    Categoria.findOne({slug: req.params.slug}).then((categoria)=>{
+        if(categoria){
+            Postagem.find({categoria: categoria._id}).then((postagens)=>{
+                res.render('categoria/postagens', {
+                    categoria: categoria,
+                    postagens: postagens
+                })
+
+            }).catch((error)=>{
+                req.flash('error_msg', 'Houve um erro ao listar as postagens')
+                res.redirect('/')
+            })
+        }else{
+            req.flash('error_msg', 'Esta categoria não existe')
+            res.redirect('/')
+        }
+    }).catch((erro)=>{
+        req.flash('error_msg', 'Houve um erro ao pesquisar a categoria')
         res.redirect('/')
     })
 })
