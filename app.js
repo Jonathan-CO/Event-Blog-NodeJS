@@ -15,18 +15,26 @@
     require('./models/Categoria')
     const Categoria = mongoose.model('categorias')
 
+    const passport = require('passport')
+    require('./config/auth')(passport)
+
     // express json
     app.use(express.urlencoded({extended: true}))
     app.use(express.json())
 
      
  //configurações
+    //Deve-se seguir essa ordem: sessão, passport, flash
     //session
     app.use(session({
         secret: 'cursodenode',
         resave: true,
         saveUninitialized: true
     }))
+
+    app.use(passport.initialize())
+    app.use(passport.session())
+
     app.use(flash())
 
     //Middleware
