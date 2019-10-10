@@ -99,4 +99,4 @@ public/
 
 
 steps
-/models/db.js
+/config/db.js

@@ -7,7 +7,7 @@
     const path = require('path')
     const session = require('express-session')
     const flash = require('connect-flash')
-    const mongoose = require('./models/db')
+    const mongoose = require('./config/db')
     
     require('./models/Postagem')
     const Postagem = mongoose.model('postagens')
@@ -123,7 +123,7 @@ app.use('/usuarios', usuarios)
 
 
 
-const port = 8081
+const port = process.env.PORT || 8081 //variável do ambiente(produção) ou 8081
 app.listen(port, () => {
     console.log("Servidor rodando")
 })
